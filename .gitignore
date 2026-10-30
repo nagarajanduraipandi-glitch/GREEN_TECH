@@ -1,4 +1,5 @@
 expense_tracker.db
+spendly.db
 *.pyc
 *.pyo
 .DS_Store
