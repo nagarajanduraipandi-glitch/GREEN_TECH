@@ -103,6 +103,8 @@ a { color: inherit; text-decoration: none; }
 .nav-links a { color: var(--ink-muted); transition: color 0.2s; }
 .nav-links a:hover { color: var(--ink); }
 
+.nav-user { color: var(--ink-soft); }
+
 .nav-cta {
     background: var(--ink) !important;
     color: var(--paper) !important;
@@ -420,6 +422,16 @@ a { color: inherit; text-decoration: none; }
     margin-bottom: 1.25rem;
 }
 
+.auth-success {
+    background: var(--accent-light);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+}
+
 .form-group { margin-bottom: 1.25rem; }
 
 .form-group label {
@@ -463,6 +475,37 @@ a { color: inherit; text-decoration: none; }
 }
 
 .btn-submit:hover { background: var(--accent); }
+
+.form-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.form-actions .btn-submit { width: auto; padding-left: 1.5rem; padding-right: 1.5rem; }
+
+.inline-form { display: inline; margin: 0; }
+
+.btn-delete {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--danger);
+    background: none;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.15rem 0.4rem;
+    margin-left: 0.5rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-delete:hover { background: var(--danger-light); }
+
+.btn-cancel { color: var(--ink-muted); font-size: 0.9rem; }
+.btn-cancel:hover { color: var(--ink); }
+
+select.form-input { appearance: auto; }
 
 .auth-switch {
     text-align: center;

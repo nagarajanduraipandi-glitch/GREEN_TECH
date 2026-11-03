@@ -85,3 +85,30 @@ None change the requirements.
 - [ ] Add tests for the Edit link, category re-selection on error and tampered `user_id` — finding 9
 - [ ] Specify the temporary-database and session-login approach for tests — finding 8
 - [ ] Confirm Steps 01–07 and this step are really implemented before relying on "complete" statuses — section 5
+
+## 7. Update 2026-11-03 — Step 08 implemented
+
+The sections above describe the tree as of 2026-10-30. Steps 01–08 are now built (`.claude/plan/08-edit-expense-plan.md`).
+
+- Section 5 is stale: `/expenses/<int:id>/edit` is a GET + POST handler; `get_expense_by_id` and `update_expense` are in `database/queries.py`; `edit_expense.html` and a shared `_expense_form.html` exist; the profile table has an Actions column with an Edit link per row.
+- Tests: `tests/test_edit_expense.py` (39 tests); 120 tests in total, all passing against a temporary database.
+- Checked over real HTTP on a scratch copy of `spendly.db`: a guest is redirected to `/login`; expense 2 opens pre-filled with Food selected; id 999 gives 404; an invalid amount re-renders with the error; a valid save redirects to `/profile` and the new values and an "Expense updated." message appear. The live `spendly.db` was not written.
+
+| # | Decision |
+|---|----------|
+| 1 | Accepted limitation: the table keeps its 10-row cap; older expenses are reached through the Step 06 date filter |
+| 2 | Done: `update_expense` returns the rows changed; the route returns 404 when it is 0 (tested with a deleted expense) |
+| 3 | Done: the POST reuses `validate_expense_form()` from Step 07 (ISO date, finite and bounded amount, rounding, description limit) |
+| 4 | Done: `get_expense_by_id` returns a plain dict or `None` |
+| 5 | Done: one `CATEGORIES` list in `database/db.py` |
+| 6 | Accepted: the redirect after saving is a plain `/profile` and drops the date filter |
+| 7 | Done: errors are flashed; tests check exact message text |
+| 8 | Done: temporary database; `session["user_id"]` set directly |
+| 9 | Done: tests for the Edit links, category re-selection after an error and a tampered `user_id` |
+| 10 | Done: shared `_expense_form.html`; the Step 07 tests confirm the add form is unchanged |
+| 11 | Accepted: no CSRF token |
+| 12 | Done: `/expenses/abc/edit` is tested as 404 |
+
+- [x] Older expenses, 404 on no-op, validation reuse, return shape, category list, filter decision, tests, isolation — findings 1–9
+- [x] Confirm Steps 01–07 and this step are implemented — section 5
+- Note: `get_recent_transactions` now also returns `id`, so the Step 05 test that listed its keys was updated.

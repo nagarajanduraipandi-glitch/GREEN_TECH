@@ -58,3 +58,26 @@ The review is mostly accurate. Its compliance table and its two High findings ho
 - [x] Correct the review's "Related files checked" line to reflect that `db.py` is a stub — done
 - [x] Verify the real state of `database/db.py` and `app.py` — done: `db.py` is a stub and `app.py` has no DB wiring; Steps 01–09 are not built in this working tree
 - [ ] Address findings 3–6 in the spec, or record them as accepted gaps — left open; these are design decisions (category CHECK vs app validation, DB path anchoring, connection ownership, `created_at` format)
+
+## 6. Update 2026-11-02 — Step 01 implemented
+
+The sections above describe the tree as of 2026-10-30. Since then Step 01 has been built (`.claude/plan/01-database-setup-plan.md`, `.claude/plan/01-database-setup-plan_1.md`).
+
+- `database/db.py` now has `get_db()`, `init_db()` and `seed_db()`; `app.py` calls `init_db()` and `seed_db()` at startup. Steps 02–09 are still not built.
+- Live `spendly.db`: 1 user (`demo@spendly.com`, hashed password), 8 expenses across all 7 categories, total 346.24, Bills highest, all dates in the current month; `PRAGMA integrity_check` is `ok`.
+- The app starts with the debug reloader on, all routes return 200, and the database still holds 1 user and 8 expenses afterwards.
+
+Decisions on the open findings:
+
+| # | Decision |
+|---|----------|
+| 3 | Resolved: SQL `CHECK (category IN (...))` built from one `CATEGORIES` constant |
+| 4 | Resolved: `DB_PATH` is built from `__file__`, so it is the project root regardless of working directory |
+| 5 | Resolved: `get_db()` only opens; `init_db()` and `seed_db()` commit and close their own connections |
+| 6 | Resolved: `created_at` defaults to `datetime('now')`, stored as `YYYY-MM-DD HH:MM:SS` |
+| 7 | Accepted: seed dates use fixed days 1–22 of the current month |
+| 8 | Accepted: SQLite default `NO ACTION` for `expenses.user_id` |
+| 9 | Deferred to Spec 02: lowercase the email before insert |
+| 10 | Accepted: `get_db` import is unused until later steps |
+
+- [x] Address findings 3–6 — done as above

@@ -84,3 +84,29 @@ Neither contradicts the prompt.
 - [x] Missing user and same-date ordering — findings 6 and 8 (done in `05-backend-routes-for-profile-page.md`); finding 7 withdrawn
 - [ ] Reword or drop the subagent line — finding 9
 - [ ] Confirm Steps 01–04 and this step are really implemented before relying on "complete" statuses — section 5
+
+## 7. Update 2026-11-03 — Step 05 implemented
+
+The sections above describe the tree as of 2026-10-30. Steps 01–05 are now built (`.claude/plan/05-backend-routes-for-profile-page.md`).
+
+- Section 5 is stale: `database/queries.py` exists with the four helpers, `tests/test_backend_connection.py` exists (20 tests, all passing against a temporary database), and `/profile` in `app.py` now reads real data.
+- Checked against the live `spendly.db` over real HTTP: logged in as the demo user the page shows Demo User, ₹346.24, 8 rows newest first (first row 2026-11-22), and breakdown percentages 35, 17, 13, 10, 9, 8, 8 (sum 100). `spendly.db` was not changed by the tests (1 user, 8 expenses).
+
+| # | Decision |
+|---|----------|
+| 1 | Done: tests set `database.db.DB_PATH` to a temporary file before importing `app` and rebuild it per test |
+| 2 | Done: seed pinned in Step 01 and asserted in the route tests |
+| 3 | Done: format check, plus a test that derives "January 2026" from a set `created_at` |
+| 4 | Done: helpers round money to two decimals |
+| 5 | Helpers return plain numbers, the template formats ₹0.00; equal category totals resolve alphabetically; empty top category is "—" |
+| 6 | Done: unknown session user clears the session and redirects to `/login` (tested) |
+| 8 | Done: `ORDER BY date DESC, id DESC` (tested) |
+| 9 | Process note only; the helpers were written directly, no subagents |
+| 10 | Accepted: table limited to 10 rows, count covers all expenses |
+| 11 | Accepted: no `id` in transactions until Step 08 |
+| 12 | Tests set `session["user_id"]` directly; registration is tested through `/register` |
+
+- [x] Reword or drop the subagent line — recorded as a process note (finding 9)
+- [x] Confirm Steps 01–04 and this step are implemented — section 5
+- Naming note: `database/db.py` has its own `get_user_by_id` (a row, used by the navbar); `queries.get_user_by_id` returns a dict. `app.py` imports `queries` as a module so they do not collide.
+- Display note: transaction dates now show as stored (`YYYY-MM-DD`); the old hardcoded "22 Nov 2026" style is gone.

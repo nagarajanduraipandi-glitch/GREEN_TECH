@@ -1,0 +1,8 @@
+Oozie Job Name,New/Existing,PySpark Job Name,Raw Data,Target Table Name (visible part),Target Truncated
+oozie_omb_financialt_trans_auditevent,Existing,ksa_rdv_financial_transcational_auditevent_load.py,,rdv_omb_ksa_ksa.fina...,Yes
+oozie_omb_financialt_trans_auditevent,Existing,ksa_tdv_financial_transcational_auditevent_load.py,,tdv_omb_ksa_ksa.finar...,Yes
+oozie_omb_financialt_trans_auditevent,Existing,Saddad.py,,tdv_omb_ksa_ksa.sada...,Yes
+oozie_omb_nonfinancial_date_filter_group,Existing,eib_nonfinancial_tdv_incre_load.py,,tdv_omb_uae_ebi.nonfi...,Yes
+oozie_omb_nonfinancial_date_filter_group,Existing,ebi_nonfinancial_tdv_incre_load.py,,tdv_omb_ei_eib.nonfina...,Yes
+oozie_omb_request_report_group,Existing,tdv_request_report_incre_load.py,,tdv_omb_ksa_ksa.reque...,Yes
+oozie_omb_request_report_group,Existing,cl_request_report_batch.py,,cl_omb_group_reports....,Yes

@@ -78,3 +78,28 @@ It does not contradict the prompt.
 - [x] Specify the member-since format — finding 10 (done in `04-profile.md`)
 - [ ] Specify the badge class naming — finding 6 (open: one shared class vs one class per category)
 - [ ] Confirm Steps 01–03 and this step are really implemented before relying on "complete" statuses — section 5
+
+## 7. Update 2026-11-02 — Step 04 implemented
+
+The sections above describe the tree as of 2026-10-30. Steps 01–04 are now built (`.claude/plan/04-login-logout-plan.md`).
+
+- Section 5 is stale: `/profile` in `app.py` has the session guard and hardcoded context; `templates/profile.html` and `static/css/profile.css` exist.
+- The hardcoded values mirror the live `spendly.db`: Demo User, `demo@spendly.com`, 8 transactions, 7 categories, ₹346.24, Bills on top.
+- Checked with the Flask test client: guests are redirected to `/login`; a logged-in user gets 200 with the user card, three stats, 8 table rows, 7 breakdown rows and the logged-in navbar; no `$`/`£`, no inline styles and no hex colours in the profile template or stylesheet.
+
+| # | Decision |
+|---|----------|
+| 1 | Done: `static/css/profile.css`, loaded through the `head` block with `url_for` |
+| 2, 7 | Done in Step 03: `base.html` reads `current_user`; a Profile link was added here |
+| 3 | Done: ₹ with two decimals |
+| 4 | Done: values copied from the seed data |
+| 5 | Initials hardcoded in the user dict (`DU`) |
+| 6 | One shared `.badge` class plus a `.badge-<category>` modifier per category, defined in `profile.css` |
+| 8 | Done: the template shows a message when a list is empty |
+| 9 | 8 rows, matching the seed data |
+| 10 | Done: "November 2026" |
+
+- [x] Navbar owner and variable — findings 2 and 7
+- [x] Badge class naming — finding 6
+- [x] Confirm Steps 01–03 and this step are implemented — section 5
+- Known limit: every logged-in user sees the Demo User's figures until Step 05 wires real queries. The navbar shows the real logged-in name.

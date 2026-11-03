@@ -86,3 +86,30 @@ It does not contradict the prompt.
 - [x] State that the conditional SQL fragment must be fixed text with bound parameters — finding 8 (done)
 - [x] Add Step 03 to Depends on — finding 12 (done)
 - [ ] Confirm Steps 01–05 and this step are really implemented before relying on "complete" statuses — section 5
+
+## 8. Update 2026-11-03 — Step 06 implemented
+
+The sections above describe the tree as of 2026-10-30. Steps 01–06 are now built (`.claude/plan/06-date-filter-profile-plan.md`).
+
+- Section 5 is stale: `database/queries.py`, `profile.html` and `profile.css` exist and the three helpers take `date_from` / `date_to`. `/profile` validates the dates, builds the preset links, and shows the flash and filter bar.
+- Tests: `tests/test_date_filter.py` (24 tests) plus the earlier Step 05 tests, 44 in total, all passing against a temporary database.
+- Checked over real HTTP on the live `spendly.db` (today is 3 Nov 2026): no params gives ₹346.24 and 8 rows; "This Month" (1–3 Nov) gives ₹150.50 and 2; a custom 5–12 Nov range gives ₹86.74 and 3; a reversed range flashes the error and shows everything; a malformed date silently shows everything; a range with no expenses gives ₹0.00 and 0. The database was not changed.
+
+| # | Decision |
+|---|----------|
+| 1 | Done: `tests/test_date_filter.py` covers reversed, malformed, one-sided, empty and single-day ranges, presets and clamping |
+| 2 | Done: flash block above the filter bar in `profile.html` |
+| 3, 4 | Done: calendar-month windows via `calendar.monthrange`; "This Month" ends today |
+| 5 | Done: the custom form is `method="get"` with `url_for("profile")` |
+| 6 | Accepted: one-sided ranges fall back to the unfiltered view, as the spec says |
+| 7 | A preset wins when its range equals the current range; the custom form is highlighted only when no preset matches |
+| 8 | Done: one fixed SQL fragment with `?` placeholders |
+| 9 | Equal dates are a valid one-day range; only `date_from > date_to` is rejected |
+| 10 | Out of scope: Steps 07–09 redirect to a plain `/profile` |
+| 11 | Accepted: the table shows at most 10 rows while the count covers the range |
+| 12 | Done earlier in the spec |
+
+- [x] Tests, flash block, windows, form method, SQL fragment, Step 03 dependency — findings 1, 2, 3, 4, 5, 8, 12
+- [x] One-sided ranges and highlight precedence — findings 6 and 7
+- [x] Confirm Steps 01–05 and this step are implemented — section 5
+- Live-data note: the seed dates run to 22 Nov, so on 3 Nov "This Month" shows only the 1 and 3 Nov rows. That follows the "ending today" rule.

@@ -78,3 +78,28 @@ Neither contradicts the prompt.
 - [ ] Record the GET-logout risk as accepted — finding 5
 - [ ] Decide email normalisation and logged-in `/login` behaviour — findings 6 and 7
 - [ ] Confirm Steps 01 and 02 are really implemented before building this step — section 5
+
+## 7. Update 2026-11-02 — Step 03 implemented
+
+The sections above describe the tree as of 2026-10-30. Steps 01, 02 and 03 are now built (`.claude/plan/03-login-logout-plan.md`).
+
+- Section 5 is stale: `database/db.py` has `get_user_by_email`, `get_user_by_id` and `create_user`; `app.py` has `secret_key`, a `current_user` context processor, `login()` and `logout()`.
+- Checked against the live `spendly.db` (1 user, `demo@spendly.com`; 8 expenses) over real HTTP: valid login sets the session and redirects to `/`; wrong password shows "Invalid email or password."; `/logout` clears the session; the navbar switches between "Demo User / Sign out" and "Sign in / Get started".
+
+| # | Decision |
+|---|----------|
+| 1 | Done: logged-in navbar in `base.html` (name + Sign out) |
+| 2 | Login redirects to `/`; Step 04 moves it to `/profile` |
+| 3, 4 | Done earlier in the spec |
+| 5 | Accepted risk: logout stays GET, as the prompt requires |
+| 6 | Done: `/login` redirects to `/` when already logged in |
+| 7 | Done: email is stripped and lowercased before lookup |
+| 8 | Accepted: default browser-session cookie |
+| 9 | Deferred: the landing page has no flash block |
+| 10 | Done: empty fields give the same generic error; `get_user_by_email` returns `None` for an unknown email |
+
+- [x] Add `base.html` logged-in navbar — finding 1
+- [x] Post-login redirect decision — finding 2
+- [x] Record GET-logout risk as accepted — finding 5
+- [x] Email normalisation and logged-in `/login` behaviour — findings 6 and 7
+- [x] Confirm Steps 01 and 02 are implemented — section 5

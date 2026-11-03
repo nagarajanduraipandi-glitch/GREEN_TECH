@@ -84,3 +84,29 @@ The spec complies with the prompt. All 11 sections are present, in order, with t
 - [ ] Name the CSS variable for `.btn-delete` (`--danger`) — finding 8
 - [ ] Specify the temporary-database and session-login approach for tests — finding 10
 - [ ] Confirm Steps 01–08 and this step are really implemented before relying on "complete" statuses — section 5
+
+## 7. Update 2026-11-03 — Step 09 implemented
+
+The sections above describe the tree as of 2026-10-30. Steps 01–09 are now built (`.claude/plan/09-delete-expense-plan.md`).
+
+- Section 5 is stale: `/expenses/<int:id>/delete` is a POST-only handler; `queries.delete_expense` exists; each profile row has an Edit link and a Delete form; `.btn-delete` is in `style.css`; `main.js` holds the confirm listener.
+- Tests: `tests/test_delete_expense.py` (21 tests); 141 tests in total, all passing against a temporary database.
+- Checked over real HTTP on a scratch copy of `spendly.db`: a guest POST is redirected to `/login`; GET gives 405; deleting expense 3 redirects to `/profile` and removes it from the list and totals with an "Expense deleted." message; deleting it again and deleting id 999 both give 404. The live `spendly.db` was not written (still 8 expenses, ids 1–8).
+
+| # | Decision |
+|---|----------|
+| 1 | No collision: `app.py` calls `queries.delete_expense`, and the view keeps the name `delete_expense`; a test pins it |
+| 2 | Partly mitigated with `SESSION_COOKIE_SAMESITE = "Lax"`; no token system, recorded as a residual risk |
+| 3 | Done: tests for the delete form, URL and `btn-delete` class on every row |
+| 4 | Done: `delete_expense` returns the rows deleted and the route returns 404 on 0. The route no longer calls `get_expense_by_id` first, which removes the race; ownership is still enforced in the `WHERE` clause |
+| 5 | Done: no inline `style` or `onsubmit`; a `data-confirm` attribute and a listener in `main.js` |
+| 6 | Done: "Expense deleted." is flashed and shown on the profile page |
+| 7 | Done: GET gives 405 for everyone, including logged-out visitors |
+| 8 | Done: `.btn-delete` in `style.css` uses `--danger` and `--danger-light` |
+| 9 | Accepted: the redirect is a plain `/profile` and drops the date filter |
+| 10 | Done: temporary database; `session["user_id"]` set directly |
+| 11 | Accepted: deletion is permanent |
+
+- [x] Findings 1, 3, 4, 5, 6, 8, 10 — done as above; findings 2, 9, 11 recorded as accepted or partly mitigated
+- [x] Confirm Steps 01–08 and this step are implemented — section 5
+- Not tested in a browser: the confirm and cancel dialog is checked through the markup and script only. With JavaScript disabled the form submits without a prompt.

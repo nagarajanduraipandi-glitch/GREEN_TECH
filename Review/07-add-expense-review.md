@@ -88,3 +88,31 @@ None change the requirements.
 - [ ] Specify the temporary-database and session-login approach for tests — finding 8
 - [ ] Add tests for foreign key failure, ownership, and long descriptions — finding 10
 - [ ] Confirm Steps 01–06 and this step are really implemented before relying on "complete" statuses — section 5
+
+## 7. Update 2026-11-03 — Step 07 implemented
+
+The sections above describe the tree as of 2026-10-30. Steps 01–07 are now built (`.claude/plan/07-add-expense-plan.md`).
+
+- Section 5 is stale: `/expenses/add` is a GET + POST handler, `insert_expense` is in `database/queries.py`, `templates/add_expense.html` exists, and `tests/` holds 4 test files.
+- Tests: `tests/test_add_expense.py` (37 tests); 81 tests in total, all passing against a temporary database.
+- Checked over real HTTP on a scratch copy of `spendly.db`: a guest is redirected to `/login`; the form has 7 category options and today's date; amount `0` re-renders with the error; a valid post of `2026-3-5` redirects to `/profile`, is stored as `2026-03-05`, and the total goes from ₹346.24 to ₹388.74 with an "Expense added." message. The live `spendly.db` was not written (still 1 user, 8 expenses).
+
+| # | Decision |
+|---|----------|
+| 1 | Done: the date is parsed and saved as the re-formatted ISO string |
+| 2 | Done: `nan`, `inf`, `1e999`, zero, negatives and amounts over 10,000,000 are rejected; amounts are rounded to 2 decimals |
+| 3 | Done: errors are flashed and the form re-renders; tests check the exact message text |
+| 4 | Done: the 200-character limit is enforced on the server (200 accepted, 201 rejected); whitespace-only becomes NULL |
+| 5 | Redirect goes to a plain `/profile`; the table still shows the latest 10, so an old-dated expense may not be listed |
+| 6 | Done: `insert_expense` commits, closes its connection and returns the new id; constraint errors are not caught |
+| 7 | Done: the "Add Expense" link is in the logged-in branch of the navbar |
+| 8 | Done: temporary database; `session["user_id"]` set directly |
+| 9 | Accepted: no CSRF token at this stage |
+| 10 | Done: tests for an unknown user, ownership (a posted `user_id` is ignored) and long descriptions |
+| 11 | Done: the selected category stays selected after an error |
+| 12 | The server supplies today's date through `get_today()` |
+| 13 | Done: the amount field is labelled "Amount (₹)" |
+
+- [x] ISO date, amount rules, error mechanism, description limit, `insert_expense` contract, navbar owner, test approach, extra tests — findings 1–4, 6–8, 10
+- [x] Confirm Steps 01–06 and this step are implemented — section 5
+- Not enforced: a future date is accepted, because the spec does not forbid it.
