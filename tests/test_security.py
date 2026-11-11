@@ -80,7 +80,7 @@ def expense_count():
 
 def assert_tables_intact():
     names = {r["name"] for r in db_rows("SELECT name FROM sqlite_master WHERE type='table'")}
-    assert {"users", "expenses"} <= names, f"Core tables missing: {names}"
+    assert {"login_user", "expenses"} <= names, f"Core tables missing: {names}"
 
 
 def valid(**over):
@@ -191,7 +191,7 @@ class TestPostedUserIdIgnored:
 
 # ------------------------------------------------- (4) SQL injection style
 
-SQLI = ["' OR '1'='1", "'; DROP TABLE expenses; --", "\" OR 1=1 --", "1; DROP TABLE users;--"]
+SQLI = ["' OR '1'='1", "'; DROP TABLE expenses; --", "\" OR 1=1 --", "1; DROP TABLE login_user;--"]
 
 
 class TestSqlInjection:

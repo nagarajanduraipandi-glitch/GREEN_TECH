@@ -32,7 +32,7 @@ def init_db():
     try:
         conn.execute(
             """
-            CREATE TABLE IF NOT EXISTS users (
+            CREATE TABLE IF NOT EXISTS login_user (
                 id            INTEGER PRIMARY KEY AUTOINCREMENT,
                 name          TEXT NOT NULL,
                 email         TEXT NOT NULL UNIQUE,
@@ -45,7 +45,7 @@ def init_db():
             f"""
             CREATE TABLE IF NOT EXISTS expenses (
                 id          INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id     INTEGER NOT NULL REFERENCES users(id),
+                user_id     INTEGER NOT NULL REFERENCES login_user(id),
                 amount      REAL NOT NULL,
                 category    TEXT NOT NULL CHECK (category IN ({category_list})),
                 date        TEXT NOT NULL,
@@ -63,7 +63,7 @@ def create_user(name, email, password):
     conn = get_db()
     try:
         cur = conn.execute(
-            "INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)",
+            "INSERT INTO login_user (name, email, password_hash) VALUES (?, ?, ?)",
             (name.strip(), email.strip().lower(), generate_password_hash(password)),
         )
         conn.commit()
@@ -76,7 +76,7 @@ def get_user_by_email(email):
     conn = get_db()
     try:
         return conn.execute(
-            "SELECT * FROM users WHERE email = ?", (email.strip().lower(),)
+            "SELECT * FROM login_user WHERE email = ?", (email.strip().lower(),)
         ).fetchone()
     finally:
         conn.close()
@@ -86,7 +86,7 @@ def get_user_by_id(user_id):
     conn = get_db()
     try:
         return conn.execute(
-            "SELECT * FROM users WHERE id = ?", (user_id,)
+            "SELECT * FROM login_user WHERE id = ?", (user_id,)
         ).fetchone()
     finally:
         conn.close()
@@ -95,11 +95,11 @@ def get_user_by_id(user_id):
 def seed_db():
     conn = get_db()
     try:
-        if conn.execute("SELECT COUNT(*) FROM users").fetchone()[0] > 0:
+        if conn.execute("SELECT COUNT(*) FROM login_user").fetchone()[0] > 0:
             return
 
         cur = conn.execute(
-            "INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)",
+            "INSERT INTO login_user (name, email, password_hash) VALUES (?, ?, ?)",
             ("Demo User", "demo@spendly.com", generate_password_hash("demo123")),
         )
         user_id = cur.lastrowid

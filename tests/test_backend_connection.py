@@ -67,7 +67,7 @@ def test_get_user_by_id_missing():
 
 def test_member_since_derived_from_created_at():
     conn = dbmod.get_db()
-    conn.execute("UPDATE users SET created_at = '2026-01-15 10:00:00' WHERE id = 1")
+    conn.execute("UPDATE login_user SET created_at = '2026-01-15 10:00:00' WHERE id = 1")
     conn.commit()
     conn.close()
     assert queries.get_user_by_id(1)["member_since"] == "January 2026"

@@ -29,7 +29,7 @@ def get_user_by_id(user_id):
     conn = get_db()
     try:
         row = conn.execute(
-            "SELECT name, email, created_at FROM users WHERE id = ?", (user_id,)
+            "SELECT name, email, created_at FROM login_user WHERE id = ?", (user_id,)
         ).fetchone()
     finally:
         conn.close()
